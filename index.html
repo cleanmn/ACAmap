@@ -101,6 +101,9 @@
       transformRequest: transformRequest
     });
 
+    var sourceUrl = 'https://docs.google.com/spreadsheets/d/1jJpVWBGusJoBiY991qwZyHQwtRaLqquk3xqhn3v3fQI/gviz/tq?tqx=out:csv&sheet=Data'
+    // from My Drive/ACA/Mapping/ACA In Person Meetings
+
     $(document).ready(function () {
       $.ajax({
         type: "GET",
@@ -121,19 +124,17 @@
 
             //Add the the layer to the map
 
-            map.addSource('day', {
+            map.addSource('meetings', {
                 'type': 'geojson',
                 'data': data
               });
             map.addLayer({
               'id': 'csvData',
               'type': 'circle',
-              'source': 'day',
+              'source': 'meetings',
               'paint': {
                 'circle-radius': 5,
-                'circle-color': [
-                  'match',
-                  ['get', 'day'],
+                'circle-color': ['match', ['get', 'Day'],
                   'Sunday', '#d73027',
                   'Monday', '#fc8d59',
                   'Tuesday', '#fee090',
@@ -141,12 +142,10 @@
                   'Thursday', '#e0f3f8',
                   'Friday', '#91bfdb',
                   'Saturday', '#4575b4',
-                  /* other */ '#ccc'
-                  ]
+                  '#ccc'  // outliers
+              ]
               }
             });
-
-
 
 
             // When a click event occurs on a feature in the csvData layer, open a popup at the
