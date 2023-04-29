@@ -101,7 +101,7 @@
       transformRequest: transformRequest
     });
 
-    var sourceUrl = 'https://docs.google.com/spreadsheets/d/1jJpVWBGusJoBiY991qwZyHQwtRaLqquk3xqhn3v3fQI/gviz/tq?tqx=out:csv&sheet=Data'
+    var sourceUrl = 'https://docs.google.com/spreadsheets/d/1jJpVWBGusJoBiY991qwZyHQwtRaLqquk3xqhn3v3fQI/gviz/tq?tqx=out:csv&sheet=Data';
     // from My Drive/ACA/Mapping/ACA In Person Meetings
 
     $(document).ready(function () {
@@ -134,7 +134,7 @@
               'source': 'meetings',
               'paint': {
                 'circle-radius': 5,
-                'circle-color': ['match', ['get', 'Day'],
+                'circle-color': ['match', ['get', 'Day'], 
                   'Sunday', '#d73027',
                   'Monday', '#fc8d59',
                   'Tuesday', '#fee090',
@@ -142,8 +142,10 @@
                   'Thursday', '#e0f3f8',
                   'Friday', '#91bfdb',
                   'Saturday', '#4575b4',
-                  '#ccc'  // outliers
-              ]
+                  '#ccc'
+                  ],
+                'circle-stroke-width': 0.5,
+                'circle-stroke-color': '#000'
               }
             });
 
