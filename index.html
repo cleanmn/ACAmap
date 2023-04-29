@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+  <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
   <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
   <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
   <style>
@@ -110,7 +111,6 @@
       });
 
 
-
       function makeGeoJSON(csvData) {
         csv2geojson.csv2geojson(csvData, {
           latfield: 'Lat',
@@ -120,18 +120,33 @@
           map.on('load', function () {
 
             //Add the the layer to the map
+
+            map.addSource('day', {
+                'type': 'geojson',
+                'data': data
+              });
             map.addLayer({
               'id': 'csvData',
               'type': 'circle',
-              'source': {
-                'type': 'geojson',
-                'data': data
-              },
+              'source': 'day',
               'paint': {
                 'circle-radius': 5,
-                'circle-color': "purple"
+                'circle-color': [
+                  'match',
+                  ['get', 'day'],
+                  'Sunday', '#d73027',
+                  'Monday', '#fc8d59',
+                  'Tuesday', '#fee090',
+                  'Wednesday', '#ffffbf',
+                  'Thursday', '#e0f3f8',
+                  'Friday', '#91bfdb',
+                  'Saturday', '#4575b4',
+                  /* other */ '#ccc'
+                  ]
               }
             });
+
+
 
 
             // When a click event occurs on a feature in the csvData layer, open a popup at the
