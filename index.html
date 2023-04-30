@@ -104,6 +104,14 @@
     var sourceUrl = 'https://docs.google.com/spreadsheets/d/1jJpVWBGusJoBiY991qwZyHQwtRaLqquk3xqhn3v3fQI/gviz/tq?tqx=out:csv&sheet=Data';
     // from My Drive/ACA/Mapping/ACA In Person Meetings
 
+    var dayColors = ['Sunday', '#d73027',
+                'Monday', '#fc8d59',
+                'Tuesday', '#fee090',
+                'Wednesday', '#ffffbf',
+                'Thursday', '#e0f3f8',
+                'Friday', '#91bfdb',
+                'Saturday', '#4575b4']
+
     $(document).ready(function () {
       $.ajax({
         type: "GET",
@@ -135,13 +143,8 @@
               'paint': {
                 'circle-radius': 5,
                 'circle-color': ['match', ['get', 'Day'], 
-                  'Sunday', '#d73027',
-                  'Monday', '#fc8d59',
-                  'Tuesday', '#fee090',
-                  'Wednesday', '#ffffbf',
-                  'Thursday', '#e0f3f8',
-                  'Friday', '#91bfdb',
-                  'Saturday', '#4575b4',
+                  dayColors[0],dayColors[1],dayColors[2],dayColors[3],dayColors[4],dayColors[5],dayColors[6],
+                  dayColors[7],dayColors[8],dayColors[9],dayColors[10],dayColors[11],dayColors[12],dayColors[13],
                   '#ccc'
                   ],
                 'circle-stroke-width': 0.5,
