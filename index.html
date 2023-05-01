@@ -156,18 +156,18 @@
             // When a click event occurs on a feature in the csvData layer, open a popup at the
             // location of the feature, with description HTML from its properties.
             map.on('click', 'csvData', function (e) {
-              var coordinates = e.features[0].geometry.coordinates.slice();
-              var Day = e.features[0].geometry.Day;
-              var Time = e.features[0].geometry.Time;
-              var Title = e.features[0].geometry.Title;
-              var Address = e.features[0].geometry.Address;
-              var Notes = e.features[0].geometry.Notes;
-              var Directions = e.features[0].geometry.Directions;
+              var coordinates = e.features[0].properties.geometry.slice();
+              var Day = e.features[0].properties.Day;
+              var Time = e.features[0].properties.Time;
+              var Title = e.features[0].properties.Title;
+              var Address = e.features[0].properties.Address;
+              var Notes = e.features[0].properties.Notes;
+              var Directions = e.features[0].properties.Directions;
               
               //set popup text
               //You can adjust the values of the popup to match the headers of your CSV.
               // For example: e.features[0].properties.Name is retrieving information from the field Name in the original CSV.
-              var description = `<h3>` + e.features[0].geometry.Day + ` ` + Time + `</h3>` + 
+              var description = `<h3>` + Day + ` ` + Time + `</h3>` + 
                 `<h4>` + `<b>` + Title + `</b>` + `</h4>` + 
                 `<h4>` + `<a href="` + Directions + `" target="_blank">` + Address + `</a>` + `</h4>` +
                 `<h4>` + Notes + `</h4>`
