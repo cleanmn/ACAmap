@@ -12,6 +12,10 @@
   <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
   <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
   <style>
+    :root {
+      --title-color: rgb(160, 7, 243);
+    }
+    
     body {
       margin: 0;
       padding: 0;
@@ -45,7 +49,7 @@
     }
 
     .mapboxgl-popup-content h3 {
-      background: rgb(61, 59, 59);
+      /* background: rgb(61, 59, 59); */
       text-align: center;
       color: #fff;
       margin: 0;
@@ -70,9 +74,19 @@
       margin-top: 3px;
     }
 
-    .mapboxgl-popup-anchor-top>.mapboxgl-popup-tip {
-      border-bottom-color: rgb(61, 59, 59);
+    .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+    .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+    .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+      border-bottom-color: var(--title-color, rgb(0, 0, 0));
     }
+    .mapboxgl-popup-anchor-left .mapboxgl-popup-tip,
+    .mapboxgl-popup-anchor-right .mapboxgl-popup-tip
+    .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+    .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+    .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+        border-top-color:rgb(255,255,255);
+    }
+    
   </style>
 </head>
 
@@ -156,7 +170,7 @@
             // When a click event occurs on a feature in the csvData layer, open a popup at the
             // location of the feature, with description HTML from its properties.
             map.on('click', 'csvData', function (e) {
-              var coordinates = e.features[0].properties.geometry.slice();
+              var coordinates = e.features[0].geometry.coordinates.slice();
               var Day = e.features[0].properties.Day;
               var Time = e.features[0].properties.Time;
               var Title = e.features[0].properties.Title;
@@ -164,14 +178,17 @@
               var Notes = e.features[0].properties.Notes;
               var Directions = e.features[0].properties.Directions;
               
+              
               //set popup text
-              //You can adjust the values of the popup to match the headers of your CSV.
-              // For example: e.features[0].properties.Name is retrieving information from the field Name in the original CSV.
-              var description = `<h3>` + Day + ` ` + Time + `</h3>` + 
-                `<h4>` + `<b>` + Title + `</b>` + `</h4>` + 
-                `<h4>` + `<a href="` + Directions + `" target="_blank">` + Address + `</a>` + `</h4>` +
-                `<h4>` + Notes + `</h4>`
-                ;
+              var titleColor = dayColors[dayColors.indexOf(Day) + 1]
+              var description = `<h3 style='background: ` + titleColor + `;'>` + Day + ` ` + Time + `</h3>` + 
+              `<h4>` + `<b>` + Title + `</b>` + `</h4>` + 
+              `<h4>` + `<a href="` + Directions + `" target="_blank">` + Address + `</a>` + `</h4>` +
+              `<h4>` + Notes + `</h4>`
+              ;
+              
+              let root = document.documentElement;
+              root.style.setProperty('--title-color', titleColor);
 
               // Ensure that if the map is zoomed out such that multiple
               // copies of the feature are visible, the popup appears
@@ -188,13 +205,13 @@
                 .addTo(map);
             });
 
-            // Change the cursor to a pointer when the mouse is over the places layer.
+            // Change the cursor to a pointer when the mouse is over the csvData layer.
             map.on('mouseenter', 'csvData', function () {
               map.getCanvas().style.cursor = 'pointer';
             });
 
             // Change it back to a pointer when it leaves.
-            map.on('mouseleave', 'places', function () {
+            map.on('mouseleave', 'csvData', function () {
               map.getCanvas().style.cursor = '';
             });
 
