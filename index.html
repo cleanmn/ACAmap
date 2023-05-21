@@ -51,10 +51,10 @@
     .mapboxgl-popup-content h3 {
       /* background: rgb(61, 59, 59); */
       text-align: center;
-      color: #fff;
+      color: #000;
       margin: 0;
       display: block;
-      padding: 15px;
+      padding: 5px;
       font-weight: 700;
       margin-top: -5px;
     }
@@ -121,7 +121,7 @@
     var dayColors = ['Sunday', '#d73027',
                 'Monday', '#fc8d59',
                 'Tuesday', '#fee090',
-                'Wednesday', '#ffffbf',
+                'Wednesday', '#fafa33',
                 'Thursday', '#e0f3f8',
                 'Friday', '#91bfdb',
                 'Saturday', '#4575b4']
@@ -180,8 +180,10 @@
               
               
               //set popup text
-              var titleColor = dayColors[dayColors.indexOf(Day) + 1]
-              var description = `<h3 style='background: ` + titleColor + `;'>` + Day + ` ` + Time + `</h3>` + 
+              var titleDay = dayColors.indexOf(Day)
+              var titleColor = dayColors[titleDay + 1]
+              var titleDayTextColor = titleDay == 0 || titleDay == 12 ? '#fff' : '#000' // white text for Sat or Sun
+              var description = `<h3 style='background: ` + titleColor + `; color: ` + titleDayTextColor + `;'>` + Day + ` ` + Time + `</h3>` + 
               `<h4>` + `<b>` + Title + `</b>` + `</h4>` + 
               `<h4>` + `<a href="` + Directions + `" target="_blank">` + Address + `</a>` + `</h4>` +
               `<h4>` + Notes + `</h4>`
