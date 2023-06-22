@@ -210,12 +210,28 @@
             for (const feature of data.features) {
               const dayName = feature.properties.Day;
               const layerID = `poi-${dayName}`;
+              const clickLayerID = `poi-${dayName}-click`;
 
             // see also Style circles with a data-driven property:
             // https://docs.mapbox.com/mapbox-gl-js/example/data-driven-circle-colors/
               // Add a layer for this dayName type if it hasn't been added already.
               // https://docs.mapbox.com/mapbox-gl-js/example/filter-markers/
               if (!map.getLayer(layerID)) {
+
+                // extra point to increase clickable target size
+                map.addLayer({
+                'id': clickLayerID,
+                'type': 'circle',
+                'source': 'meetings',
+                'paint': {
+                  'circle-radius': 20,
+                  'circle-color': 'red',
+                  'circle-opacity': 0.01
+                },
+                  'filter': ['==', 'Day', dayName]
+                });
+
+                // actual visible marker
                 map.addLayer({
                 'id': layerID,
                 'type': 'circle',
@@ -247,7 +263,7 @@
 
                 // When a click event occurs on a feature in the csvData layer, open a popup at the
                 // location of the feature, with description HTML from its properties.
-                map.on('click', layerID, function (e) {
+                map.on('click', clickLayerID, function (e) {
                   var coordinates = e.features[0].geometry.coordinates.slice();
                   var Day = e.features[0].properties.Day;
                   var Time = e.features[0].properties.Time;
@@ -285,12 +301,12 @@
                 });
 
                 // Change the cursor to a pointer when the mouse is over the csvData layer.
-                map.on('mouseenter', layerID, function () {
+                map.on('mouseenter', clickLayerID, function () {
                   map.getCanvas().style.cursor = 'pointer';
                 });
 
                 // Change it back to a pointer when it leaves.
-                map.on('mouseleave', layerID, function () {
+                map.on('mouseleave', clickLayerID, function () {
                   map.getCanvas().style.cursor = '';
                 });
 
@@ -299,6 +315,11 @@
 
                 // When the checkbox changes, update the visibility of the layer.
                 input.addEventListener('change', (e) => {
+                    map.setLayoutProperty(
+                        clickLayerID,
+                        'visibility',
+                        e.target.checked ? 'visible' : 'none'
+                    );
                     map.setLayoutProperty(
                         layerID,
                         'visibility',
