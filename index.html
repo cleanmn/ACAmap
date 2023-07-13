@@ -87,64 +87,12 @@
         border-top-color:rgb(255,255,255);
     }
     
-    .filter-group {
-    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-    font-weight: 600;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1;
-    border-radius: 3px;
-    width: 120px;
-    color: #fff;
-    }
-    
-    /* See Filter symbols by toggling checkboxes
-        https://docs.mapbox.com/mapbox-gl-js/example/filter-markers/ */
-
-    .filter-group input[type='checkbox']:first-child + label {
-    border-radius: 3px 3px 0 0;
-    }
-    
-    .filter-group label:last-child {
-    border-radius: 0 0 3px 3px;
-    border: none;
-    }
-    
-    .filter-group input[type='checkbox'] {
-    display: none;
-    }
-    
-    .filter-group input[type='checkbox'] + label {
-    background-color: #3386c0;
-    display: block;
-    cursor: pointer;
-    padding: 10px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    }
-    
-    .filter-group input[type='checkbox'] + label {
-    background-color: #3386c0;
-    text-transform: capitalize;
-    }
-    
-    .filter-group input[type='checkbox'] + label:hover,
-    .filter-group input[type='checkbox']:checked + label {
-    background-color: #4ea0da;
-    }
-    
-    .filter-group input[type='checkbox']:checked + label:before {
-    content: '✔';
-    margin-right: 5px;
-    }
   </style>
 </head>
 
 <body>
 
   <div id='map'></div>
-  <nav id="filter-group" class="filter-group"></nav>
-
   <script>
 
     var transformRequest = (url, resourceType) => {
@@ -159,9 +107,6 @@
     };
     
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2xlYW5tbiIsImEiOiJjbGZlbHUzb20wNDB1M3JwYXlmMXl4bjA3In0.LEz0lDjAd-1ky7_iEmF6RQ';  // Github Pages Mapping
-   
-    const filterGroup = document.getElementById('filter-group');
-
     var map = new mapboxgl.Map({
       container: 'map', // container id
       style: 'mapbox://styles/cleanmn/clfem73uf001b01mdu3bykj0m', // Frank
@@ -170,7 +115,6 @@
       transformRequest: transformRequest
     });
 
-    // re: Sheet Mapper https://labs.mapbox.com/education/impact-tools/sheet-mapper/
     var sourceUrl = 'https://docs.google.com/spreadsheets/d/1jJpVWBGusJoBiY991qwZyHQwtRaLqquk3xqhn3v3fQI/gviz/tq?tqx=out:csv&sheet=Data';
     // from My Drive/ACA/Mapping/ACA In Person Meetings
 
@@ -206,109 +150,75 @@
                 'type': 'geojson',
                 'data': data
               });
+            map.addLayer({
+              'id': 'csvData',
+              'type': 'circle',
+              'source': 'meetings',
+              'paint': {
+                'circle-radius': 7,
+                'circle-color': ['match', ['get', 'Day'], 
+                  dayColors[0],dayColors[1],dayColors[2],dayColors[3],dayColors[4],dayColors[5],dayColors[6],
+                  dayColors[7],dayColors[8],dayColors[9],dayColors[10],dayColors[11],dayColors[12],dayColors[13],
+                  '#ccc'
+                  ],
+                'circle-stroke-width': 1,
+                'circle-stroke-color': '#000'
+              }
+            });
 
-            for (const feature of data.features) {
-              const dayName = feature.properties.Day;
-              const layerID = `poi-${dayName}`;
 
-            // see also Style circles with a data-driven property:
-            // https://docs.mapbox.com/mapbox-gl-js/example/data-driven-circle-colors/
-              // Add a layer for this dayName type if it hasn't been added already.
-              // https://docs.mapbox.com/mapbox-gl-js/example/filter-markers/
-              if (!map.getLayer(layerID)) {
-                map.addLayer({
-                'id': layerID,
-                'type': 'circle',
-                'source': 'meetings',
-                'paint': {
-                  'circle-radius': 7,
-                  'circle-color': ['match', ['get', 'Day'], 
-                    dayColors[0],dayColors[1],dayColors[2],dayColors[3],dayColors[4],dayColors[5],dayColors[6],
-                    dayColors[7],dayColors[8],dayColors[9],dayColors[10],dayColors[11],dayColors[12],dayColors[13],
-                    '#ccc'
-                    ],
-                  'circle-stroke-width': 1,
-                  'circle-stroke-color': '#000'
-                },
-                  'filter': ['==', 'Day', dayName]
-                });
+            // When a click event occurs on a feature in the csvData layer, open a popup at the
+            // location of the feature, with description HTML from its properties.
+            map.on('click', 'csvData', function (e) {
+              var coordinates = e.features[0].geometry.coordinates.slice();
+              var Day = e.features[0].properties.Day;
+              var Time = e.features[0].properties.Time;
+              var Title = e.features[0].properties.Title;
+              var Address = e.features[0].properties.Address;
+              var Notes = e.features[0].properties.Notes;
+              var Directions = e.features[0].properties.Directions;
+              
+              
+              //set popup text
+              var titleDay = dayColors.indexOf(Day)
+              var titleColor = dayColors[titleDay + 1]
+              var titleDayTextColor = titleDay == 0 || titleDay == 12 ? '#fff' : '#000' // white text for Sat or Sun
+              var description = `<h3 style='background: ` + titleColor + `; color: ` + titleDayTextColor + `;'>` + Day + ` ` + Time + `</h3>` + 
+              `<h4>` + `<b>` + Title + `</b>` + `</h4>` + 
+              `<h4>` + `<a href="` + Directions + `" target="_blank">` + Address + `</a>` + `</h4>` +
+              `<h4>` + Notes + `</h4>`
+              ;
+              
+              let root = document.documentElement;
+              root.style.setProperty('--title-color', titleColor);
 
-                // Add checkbox and label elements for the layer.
-                const input = document.createElement('input');
-                input.type = 'checkbox';
-                input.id = layerID;
-                input.checked = true;
-                filterGroup.appendChild(input);
-                
-                const label = document.createElement('label');
-                label.setAttribute('for', layerID);
-                label.textContent = dayName;
-                filterGroup.appendChild(label);
+              // Ensure that if the map is zoomed out such that multiple
+              // copies of the feature are visible, the popup appears
+              // over the copy being pointed to.
+              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+              }
 
-                // When a click event occurs on a feature in the csvData layer, open a popup at the
-                // location of the feature, with description HTML from its properties.
-                map.on('click', layerID, function (e) {
-                  var coordinates = e.features[0].geometry.coordinates.slice();
-                  var Day = e.features[0].properties.Day;
-                  var Time = e.features[0].properties.Time;
-                  var Title = e.features[0].properties.Title;
-                  var Address = e.features[0].properties.Address;
-                  var Notes = e.features[0].properties.Notes;
-                  var Directions = e.features[0].properties.Directions;
-                  
-                  
-                  //set popup text
-                  var titleDay = dayColors.indexOf(Day)
-                  var titleColor = dayColors[titleDay + 1]
-                  var titleDayTextColor = titleDay == 0 || titleDay == 12 ? '#fff' : '#000' // white text for Sat or Sun
-                  var description = `<h3 style='background: ` + titleColor + `; color: ` + titleDayTextColor + `;'>` + Day + ` ` + Time + `</h3>` + 
-                  `<h4>` + `<b>` + Title + `</b>` + `</h4>` + 
-                  `<h4>` + `<a href="` + Directions + `" target="_blank">` + Address + `</a>` + `</h4>` +
-                  `<h4>` + Notes + `</h4>`
-                  ;
-                  
-                  let root = document.documentElement;
-                  root.style.setProperty('--title-color', titleColor);
+              //add Popup to map
 
-                  // Ensure that if the map is zoomed out such that multiple
-                  // copies of the feature are visible, the popup appears
-                  // over the copy being pointed to.
-                  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                  }
+              new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map);
+            });
 
-                  //add Popup to map
-                  new mapboxgl.Popup()
-                    .setLngLat(coordinates)
-                    .setHTML(description)
-                    .addTo(map);
-                });
+            // Change the cursor to a pointer when the mouse is over the csvData layer.
+            map.on('mouseenter', 'csvData', function () {
+              map.getCanvas().style.cursor = 'pointer';
+            });
 
-                // Change the cursor to a pointer when the mouse is over the csvData layer.
-                map.on('mouseenter', layerID, function () {
-                  map.getCanvas().style.cursor = 'pointer';
-                });
+            // Change it back to a pointer when it leaves.
+            map.on('mouseleave', 'csvData', function () {
+              map.getCanvas().style.cursor = '';
+            });
 
-                // Change it back to a pointer when it leaves.
-                map.on('mouseleave', layerID, function () {
-                  map.getCanvas().style.cursor = '';
-                });
-
-                var bbox = turf.bbox(data);
-                map.fitBounds(bbox, { padding: 50 });
-
-                // When the checkbox changes, update the visibility of the layer.
-                input.addEventListener('change', (e) => {
-                    map.setLayoutProperty(
-                        layerID,
-                        'visibility',
-                        e.target.checked ? 'visible' : 'none'
-                    );
-                });
-            
-              };
-            };
-
+            var bbox = turf.bbox(data);
+            map.fitBounds(bbox, { padding: 50 });
 
           });
 
