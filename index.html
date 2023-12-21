@@ -14,6 +14,7 @@
   <style>
     :root {
       --title-color: rgb(160, 7, 243);
+      --bug-height: 0%;
     }
     
     body {
@@ -26,6 +27,18 @@
       top: 0;
       bottom: 0;
       width: 100%;
+    }
+    
+    .map-bug {
+      position: absolute;
+      width: 100%;
+      bottom: var(--bug-height);
+      padding: 5px;
+      font: 350 13px/20px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+      display: block;
+      cursor: help;
+      text-align: center;
+      color: #555;
     }
 
     /* Popup styling */
@@ -340,5 +353,11 @@
 
 
   </script>
+
+  <!-- <div id='4' class='mapboxgl-popup-content'>Teext </div> -->
+  <div class='map-bug' id='4'>
+      Feedback? <a href="mailto:cleanmn@gmail.com?subject=Feedback on ACA meeting map" target="_blank">link</a>
+  </div>
+
 </body>
 </html>
