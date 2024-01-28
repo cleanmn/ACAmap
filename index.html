@@ -204,8 +204,13 @@
         }, function (err, data) {
           map.on('load', function () {
 
-            //Add the the layer to the map
+            map.loadImage('./ring-dot.png', (error, image) => {
+              if (error) throw error;
+              // add image to the active style and make it SDF-enabled
+              map.addImage('marker1', image, { sdf: true });
+            });
 
+            //Add the the layer to the map
             map.addSource('meetings', {
                 'type': 'geojson',
                 'data': data
@@ -214,35 +219,65 @@
             for (const feature of data.features) {
               const dayName = feature.properties.Day;
               const layerID = `poi-${dayName}`;
+              const dupeID = `dupe-${dayName}`;
 
             // see also Style circles with a data-driven property:
             // https://docs.mapbox.com/mapbox-gl-js/example/data-driven-circle-colors/
               // Add a layer for this dayName type if it hasn't been added already.
               // https://docs.mapbox.com/mapbox-gl-js/example/filter-markers/
               if (!map.getLayer(layerID)) {
+
+                map.addLayer({
+                  'id': dupeID,
+                  'type': 'symbol',
+                  'source': 'meetings',
+                  'layout': {
+                    'icon-image': 'marker1',
+                    'icon-size': 0.18,
+                    'icon-ignore-placement': true
+                  },
+                  'paint': {
+                    // 'circle-radius': 7,
+                    'icon-color': 'black'
+                    // 'circle-stroke-width': 1,
+                    // 'circle-stroke-color': '#000'
+                  },
+                  'filter': ['==', 'Day', dayName]
+                });
+
                 map.addLayer({
                 'id': layerID,
-                'type': 'circle',
+                'type': 'symbol',
                 'source': 'meetings',
+                'layout': {
+                    'icon-image': 'marker1',
+                    'icon-size': 0.15,
+                    'icon-ignore-placement': true
+                  },
                 'paint': {
-                  'circle-radius': 7,
-                  'circle-color': ['match', ['get', 'Day'], 
+                  // 'circle-radius': 7,
+                  'icon-color': ['match', ['get', 'Day'], 
                     dayColors[0],dayColors[1],dayColors[2],dayColors[3],dayColors[4],dayColors[5],dayColors[6],
                     dayColors[7],dayColors[8],dayColors[9],dayColors[10],dayColors[11],dayColors[12],dayColors[13],
                     '#ccc'
-                    ],
-                  'circle-stroke-width': 1,
-                  'circle-stroke-color': '#000'
+                    ]
+                  // 'circle-stroke-width': 1,
+                  // 'circle-stroke-color': '#000'
                 },
                   'filter': ['==', 'Day', dayName]
                 });
-                
+
                 if (dayName != todaysDayOfWeek) {
                   map.setLayoutProperty(
-                  layerID,
-                  'visibility',
-                  'none'
-                )};
+                    layerID,
+                    'visibility',
+                    'none');
+
+                  map.setLayoutProperty(
+                    dupeID,
+                    'visibility',
+                    'none');
+                };
 
                 var dayColorIndex = dayColors.indexOf(dayName);
                 var dayColor = dayColors[dayColorIndex + 1];
@@ -260,6 +295,7 @@
                 label.setAttribute('for', layerID);
                 label.textContent = dayName;
                 filterGroup.appendChild(label);
+
 
                 // When a click event occurs on a feature in the csvData layer, open a popup at the
                 // location of the feature, with description HTML from its properties.
@@ -320,14 +356,14 @@
                         'visibility',
                         e.target.checked ? 'visible' : 'none'
                     );
+
+                    map.setLayoutProperty(
+                      dupeID,
+                      'visibility',
+                      e.target.checked ? 'visible' : 'none'
+                    );
                 });
 
-                // if (dayName == todaysDayOfWeek) {
-                //   var event = new CustomEvent('change', { 'target.checked': 'visible' });
-                //   document.dispatchEvent(event);
-                // }
-
-            
               };
             };
 
