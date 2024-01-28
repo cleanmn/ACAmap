@@ -279,8 +279,8 @@
                     'none');
                 };
 
-                var dayColorIndex = dayColors.indexOf(dayName);
-                var dayColor = dayColors[dayColorIndex + 1];
+                  var dayColorIndex = dayColors.indexOf(dayName);
+                  var dayColor = dayColors[dayColorIndex + 1];
 
                 // Add checkbox and label elements for the layer.
                 const input = document.createElement('input');
@@ -297,57 +297,57 @@
                 filterGroup.appendChild(label);
 
 
-                // When a click event occurs on a feature in the csvData layer, open a popup at the
-                // location of the feature, with description HTML from its properties.
-                map.on('click', layerID, function (e) {
-                  var coordinates = e.features[0].geometry.coordinates.slice();
-                  var Day = e.features[0].properties.Day;
-                  var Time = e.features[0].properties.Time;
-                  var Title = e.features[0].properties.Title;
-                  var Address = e.features[0].properties.Address;
-                  var Notes = e.features[0].properties.Notes;
-                  var Directions = e.features[0].properties.Directions;
-                  
-                  
-                  //set popup text
-                  var titleDay = dayColors.indexOf(Day)
-                  var titleColor = dayColors[titleDay + 1]
-                  var titleDayTextColor = titleDay == 0 || titleDay == 12 ? '#fff' : '#000' // white text for Sat or Sun
-                  var description = `<h3 style='background: ` + titleColor + `; color: ` + titleDayTextColor + `;'>` + Day + ` ` + Time + `</h3>` + 
-                  `<h4>` + `<b>` + Title + `</b>` + `</h4>` + 
-                  `<h4>` + `<a href="` + Directions + `" target="_blank">` + Address + `</a>` + `</h4>` +
-                  `<h4>` + Notes + `</h4>`
-                  ;
-                  
-                  let root = document.documentElement;
-                  root.style.setProperty('--title-color', titleColor);
+                  // When a click event occurs on a feature in the csvData layer, open a popup at the
+                  // location of the feature, with description HTML from its properties.
+                  map.on('click', layerID, function (e) {
+                    var coordinates = e.features[0].geometry.coordinates.slice();
+                    var Day = e.features[0].properties.Day;
+                    var Time = e.features[0].properties.Time;
+                    var Title = e.features[0].properties.Title;
+                    var Address = e.features[0].properties.Address;
+                    var Notes = e.features[0].properties.Notes;
+                    var Directions = e.features[0].properties.Directions;
+                    
+                    
+                    //set popup text
+                    var titleDay = dayColors.indexOf(Day)
+                    var titleColor = dayColors[titleDay + 1]
+                    var titleDayTextColor = titleDay == 0 || titleDay == 12 ? '#fff' : '#000' // white text for Sat or Sun
+                    var description = `<h3 style='background: ` + titleColor + `; color: ` + titleDayTextColor + `;'>` + Day + ` ` + Time + `</h3>` + 
+                    `<h4>` + `<b>` + Title + `</b>` + `</h4>` + 
+                    `<h4>` + `<a href="` + Directions + `" target="_blank">` + Address + `</a>` + `</h4>` +
+                    `<h4>` + Notes + `</h4>`
+                    ;
+                    
+                    let root = document.documentElement;
+                    root.style.setProperty('--title-color', titleColor);
 
-                  // Ensure that if the map is zoomed out such that multiple
-                  // copies of the feature are visible, the popup appears
-                  // over the copy being pointed to.
-                  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                  }
+                    // Ensure that if the map is zoomed out such that multiple
+                    // copies of the feature are visible, the popup appears
+                    // over the copy being pointed to.
+                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                      coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                    }
 
-                  //add Popup to map
-                  new mapboxgl.Popup()
-                    .setLngLat(coordinates)
-                    .setHTML(description)
-                    .addTo(map);
-                });
+                    //add Popup to map
+                    new mapboxgl.Popup()
+                      .setLngLat(coordinates)
+                      .setHTML(description)
+                      .addTo(map);
+                  });
 
-                // Change the cursor to a pointer when the mouse is over the csvData layer.
-                map.on('mouseenter', layerID, function () {
-                  map.getCanvas().style.cursor = 'pointer';
-                });
+                  // Change the cursor to a pointer when the mouse is over the csvData layer.
+                  map.on('mouseenter', layerID, function () {
+                    map.getCanvas().style.cursor = 'pointer';
+                  });
 
-                // Change it back to a pointer when it leaves.
-                map.on('mouseleave', layerID, function () {
-                  map.getCanvas().style.cursor = '';
-                });
+                  // Change it back to a pointer when it leaves.
+                  map.on('mouseleave', layerID, function () {
+                    map.getCanvas().style.cursor = '';
+                  });
 
-                var bbox = turf.bbox(data);
-                map.fitBounds(bbox, { padding: 50 });
+                  var bbox = turf.bbox(data);
+                  map.fitBounds(bbox, { padding: 50 });
 
                 // When the checkbox changes, update the visibility of the layer.
                 input.addEventListener('change', (e) => {
@@ -366,6 +366,8 @@
 
               };
             };
+
+            });
 
 
           });
