@@ -196,10 +196,11 @@
     var map = new mapboxgl.Map({
       container: 'map', // container id
       style: 'mapbox://styles/mapbox/light-v11',
-      center: [-122.3577, 37.7876], // centroid of locations as of 3/30/23
-      zoom: 10, // starting zoom
+      center: [-122.2773, 37.7011], // centroid of locations as of 1/28/24
+      zoom: 9.4, // starting zoom
       transformRequest: transformRequest
     });
+
 
     $(document).ready(function () {
       $.ajax({
@@ -230,15 +231,15 @@
                 'data': data
               });
 
+            // map.on('moveend', () => {
+            //   console.log('Zoom: ' + map.getCenter());
+            // });
+
             for (const feature of data.features) {
               const dayName = feature.properties.Day;
               const layerID = `poi-${dayName}`;
               const dupeID = `dupe-${dayName}`;
 
-            // see also Style circles with a data-driven property:
-            // https://docs.mapbox.com/mapbox-gl-js/example/data-driven-circle-colors/
-              // Add a layer for this dayName type if it hasn't been added already.
-              // https://docs.mapbox.com/mapbox-gl-js/example/filter-markers/
               if (!map.getLayer(layerID)) {
 
                 map.addLayer({
@@ -251,10 +252,7 @@
                     'icon-ignore-placement': true
                   },
                   'paint': {
-                    // 'circle-radius': 7,
                     'icon-color': 'black'
-                    // 'circle-stroke-width': 1,
-                    // 'circle-stroke-color': '#000'
                   },
                   'filter': ['==', 'Day', dayName]
                 });
@@ -269,14 +267,11 @@
                     'icon-ignore-placement': true
                   },
                 'paint': {
-                  // 'circle-radius': 7,
                   'icon-color': ['match', ['get', 'Day'], 
                     dayColors[0],dayColors[1],dayColors[2],dayColors[3],dayColors[4],dayColors[5],dayColors[6],
                     dayColors[7],dayColors[8],dayColors[9],dayColors[10],dayColors[11],dayColors[12],dayColors[13],
                     '#ccc'
                     ]
-                  // 'circle-stroke-width': 1,
-                  // 'circle-stroke-color': '#000'
                 },
                   'filter': ['==', 'Day', dayName]
                 });
@@ -393,8 +388,9 @@
 
   <!-- <div id='4' class='mapboxgl-popup-content'>Teext </div> -->
   <div class='map-bug' id='4'>
-      Feedback? <a href="mailto:cleanmn@gmail.com?subject=Feedback on ACA meeting map" target="_blank">link</a>
+      Feedback? <a id='bug' href="mailto:cleanmn@gmail.com?subject=Feedback on ACA meeting map" target="_blank"></a>
   </div>
+
 
 </body>
 </html>
