@@ -14,6 +14,7 @@
   <style>
     :root {
       --title-color: rgb(160, 7, 243);
+      --bug-height: 0%;
     }
     
     body {
@@ -26,6 +27,18 @@
       top: 0;
       bottom: 0;
       width: 100%;
+    }
+    
+    .map-bug {
+      position: absolute;
+      width: 100%;
+      bottom: var(--bug-height);
+      padding: 5px;
+      font: 350 13px/20px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+      display: block;
+      cursor: help;
+      text-align: center;
+      color: #555;
     }
 
     /* Popup styling */
@@ -158,7 +171,8 @@
       };
     };
     
-    mapboxgl.accessToken = 'pk.eyJ1IjoiY2xlYW5tbiIsImEiOiJjbGZlbHUzb20wNDB1M3JwYXlmMXl4bjA3In0.LEz0lDjAd-1ky7_iEmF6RQ';  // Github Pages Mapping
+ // mapboxgl.accessToken = 'pk.eyJ1IjoiY2xlYW5tbiIsImEiOiJjbGZlbHUzb20wNDB1M3JwYXlmMXl4bjA3In0.LEz0lDjAd-1ky7_iEmF6RQ';  // Github Pages Mapping
+    mapboxgl.accessToken = 'pk.eyJ1IjoiY2xlYW5tbiIsImEiOiJjbGZlbG53b20wcjNjM3hudWN5ZjU5NWE0In0.6LXqe0ZU3rF0leg76lDTVA';  // Default public token
 
     // re: Sheet Mapper https://labs.mapbox.com/education/impact-tools/sheet-mapper/
     var sourceUrl = 'https://docs.google.com/spreadsheets/d/1jJpVWBGusJoBiY991qwZyHQwtRaLqquk3xqhn3v3fQI/gviz/tq?tqx=out:csv&sheet=Data';
@@ -376,5 +390,11 @@
 
 
   </script>
+
+  <!-- <div id='4' class='mapboxgl-popup-content'>Teext </div> -->
+  <div class='map-bug' id='4'>
+      Feedback? <a href="mailto:cleanmn@gmail.com?subject=Feedback on ACA meeting map" target="_blank">link</a>
+  </div>
+
 </body>
 </html>
