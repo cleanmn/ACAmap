@@ -171,8 +171,7 @@
       };
     };
     
- // mapboxgl.accessToken = 'pk.eyJ1IjoiY2xlYW5tbiIsImEiOiJjbGZlbHUzb20wNDB1M3JwYXlmMXl4bjA3In0.LEz0lDjAd-1ky7_iEmF6RQ';  // Github Pages Mapping
-    mapboxgl.accessToken = 'pk.eyJ1IjoiY2xlYW5tbiIsImEiOiJjbGZlbG53b20wcjNjM3hudWN5ZjU5NWE0In0.6LXqe0ZU3rF0leg76lDTVA';  // Default public token
+    mapboxgl.accessToken = 'pk.eyJ1IjoiY2xlYW5tbiIsImEiOiJjbGZlbHUzb20wNDB1M3JwYXlmMXl4bjA3In0.LEz0lDjAd-1ky7_iEmF6RQ';  // Github Pages Mapping
 
     // re: Sheet Mapper https://labs.mapbox.com/education/impact-tools/sheet-mapper/
     var sourceUrl = 'https://docs.google.com/spreadsheets/d/1jJpVWBGusJoBiY991qwZyHQwtRaLqquk3xqhn3v3fQI/gviz/tq?tqx=out:csv&sheet=Data';
@@ -219,21 +218,20 @@
         }, function (err, data) {
           map.on('load', function () {
 
+            let image = [];
+
             map.loadImage('./ring-dot.png', (error, image) => {
-              if (error) throw error;
-              // add image to the active style and make it SDF-enabled
+              if (error) {
+                throw error;
+                print("Bang!")
+              };
               map.addImage('marker1', image, { sdf: true });
             });
 
-            //Add the the layer to the map
             map.addSource('meetings', {
                 'type': 'geojson',
                 'data': data
               });
-
-            // map.on('moveend', () => {
-            //   console.log('Zoom: ' + map.getCenter());
-            // });
 
             for (const feature of data.features) {
               const dayName = feature.properties.Day;
@@ -291,7 +289,6 @@
                 var dayColorIndex = dayColors.indexOf(dayName);
                 var dayColor = dayColors[dayColorIndex + 1];
 
-                // Add checkbox and label elements for the layer.
                 const input = document.createElement('input');
                 input.type = 'checkbox';
                 input.id = layerID;
@@ -305,9 +302,6 @@
                 label.textContent = dayName;
                 filterGroup.appendChild(label);
 
-
-                // When a click event occurs on a feature in the csvData layer, open a popup at the
-                // location of the feature, with description HTML from its properties.
                 map.on('click', layerID, function (e) {
                   var coordinates = e.features[0].geometry.coordinates.slice();
                   var Day = e.features[0].properties.Day;
@@ -317,8 +311,6 @@
                   var Notes = e.features[0].properties.Notes;
                   var Directions = e.features[0].properties.Directions;
                   
-                  
-                  //set popup text
                   var titleDay = dayColors.indexOf(Day)
                   var titleColor = dayColors[titleDay + 1]
                   var titleDayTextColor = titleDay == 0 || titleDay == 12 ? '#fff' : '#000' // white text for Sat or Sun
@@ -338,19 +330,16 @@
                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                   }
 
-                  //add Popup to map
                   new mapboxgl.Popup()
                     .setLngLat(coordinates)
                     .setHTML(description)
                     .addTo(map);
                 });
 
-                // Change the cursor to a pointer when the mouse is over the csvData layer.
                 map.on('mouseenter', layerID, function () {
                   map.getCanvas().style.cursor = 'pointer';
                 });
 
-                // Change it back to a pointer when it leaves.
                 map.on('mouseleave', layerID, function () {
                   map.getCanvas().style.cursor = '';
                 });
@@ -383,12 +372,10 @@
       };
     });
 
-
   </script>
 
-  <!-- <div id='4' class='mapboxgl-popup-content'>Teext </div> -->
   <div class='map-bug' id='4'>
-      Feedback? <a id='bug' href="mailto:cleanmn@gmail.com?subject=Feedback on ACA meeting map" target="_blank">Send email</a>
+      Map feedback? <a id='bug' href="mailto:cleanmn@gmail.com?subject=Feedback on ACA meeting map" target="_blank">Send email</a>
   </div>
 
 
