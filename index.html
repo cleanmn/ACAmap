@@ -210,6 +210,11 @@
         success: function (csvData) { makeGeoJSON(csvData); }
       });
 
+      map.loadImage('./ring-dot.png', (error, image) => {
+        if (error) {throw error;};
+        map.addImage('marker1', image, { sdf: true });
+      });
+
       function makeGeoJSON(csvData) {
         csv2geojson.csv2geojson(csvData, {
           latfield: 'Lat',
@@ -217,16 +222,6 @@
           delimiter: ','
         }, function (err, data) {
           map.on('load', function () {
-
-            let image = [];
-
-            map.loadImage('./ring-dot.png', (error, image) => {
-              if (error) {
-                throw error;
-                print("Bang!")
-              };
-              map.addImage('marker1', image, { sdf: true });
-            });
 
             map.addSource('meetings', {
                 'type': 'geojson',
